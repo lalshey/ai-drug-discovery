@@ -3,21 +3,23 @@ from rdkit import Chem
 from rdkit.Chem import rdMolDescriptors
 import numpy as np
 
-# Load data
-df = pd.read_csv('egfr_data.csv')
+df = pd.read_csv('pubchem_egfr.csv', skiprows=[1,2,3])
+print(f"Total records: {len(df)}")
 
-# Remove missing values
-df = df.dropna(subset=['canonical_smiles', 'standard_value'])
-print(f"After cleaning: {len(df)} molecules")
+# Drop missing
+df = df.dropna(subset=['PUBCHEM_EXT_DATASOURCE_SMILES', 'PUBCHEM_ACTIVITY_OUTCOME'])
+print(f"After cleaning: {len(df)}")
 
-# Label: active if IC50 < 1000 nM (binds well to cancer protein)
-df['active'] = (df['standard_value'] < 1000).astype(int)
-print(f"Active drugs: {df['active'].sum()}")
-print(f"Inactive drugs: {(df['active'] == 0).sum()}")
+# Label active/inactive
+df['active'] = (df['PUBCHEM_ACTIVITY_OUTCOME'] == 'Active').astype(int)
+df = df.rename(columns={'PUBCHEM_EXT_DATASOURCE_SMILES': 'canonical_smiles'})
 
-# Convert molecule to fingerprint (numbers the ML model understands)
+print(f"Active: {df['active'].sum()}")
+print(f"Inactive: {(df['active']==0).sum()}")
+
+# Convert to fingerprints
 def smiles_to_fingerprint(smiles):
-    mol = Chem.MolFromSmiles(smiles)
+    mol = Chem.MolFromSmiles(str(smiles))
     if mol is None:
         return None
     fp = rdMolDescriptors.GetMorganFingerprintAsBitVect(mol, 2, 2048)
@@ -26,6 +28,5 @@ def smiles_to_fingerprint(smiles):
 df['fingerprint'] = df['canonical_smiles'].apply(smiles_to_fingerprint)
 df = df.dropna(subset=['fingerprint'])
 
-# Save
 df.to_pickle('processed_data.pkl')
-print(f"Done! Saved {len(df)} molecules to processed_data.pkl")
+print(f"✅ Done! Saved {len(df)} molecules")
