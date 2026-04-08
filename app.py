@@ -142,13 +142,6 @@ st.title("🧬 AI Drug Discovery Pipeline")
 st.markdown("#### Ensemble Cancer Drug Binding Predictor | EGFR Lung Cancer Target")
 st.markdown("---")
 
-c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("🎯 Best Accuracy", "85.0%")
-c2.metric("🧪 Molecules", "3,071")
-c3.metric("🤖 Models", "3")
-c4.metric("🎗️ Target", "EGFR")
-c5.metric("🗳️ System", "Ensemble")
-st.markdown("---")
 
 tab1, tab2, tab3, tab4 = st.tabs([
     "🔬 Ensemble Predict",
