@@ -69,7 +69,7 @@ Python · RDKit · Scikit-learn · XGBoost · PyTorch Geometric · Streamlit · 
 ## Running It Locally
 
 ```bash
-git clone https://github.com/YOURUSERNAME/ai-drug-discovery.git
+git clone https://github.com/lalshey/ai-drug-discovery.git
 cd ai-drug-discovery
 conda create -n drugproject python=3.10
 conda activate drugproject
